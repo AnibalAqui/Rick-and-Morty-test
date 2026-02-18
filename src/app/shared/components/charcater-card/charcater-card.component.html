@@ -1,0 +1,14 @@
+<div class="bg-white p-2 rounded-md flex flex-col gap-2">
+  <div class="relative w-full aspect-square cursor-pointer" (click)="onClick()">
+    <img [src]="character.image" fill alt="character-image" />
+  </div>
+  <div class="flex justify-between">
+    <p>{{ character.name }}</p>
+    <p-button
+      icon="pi pi-star"
+      size="small"
+      [severity]="severity"
+      (onClick)="addFavorite()"
+    />
+  </div>
+</div>

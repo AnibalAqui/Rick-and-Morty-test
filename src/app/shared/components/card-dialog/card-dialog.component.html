@@ -1,0 +1,64 @@
+<p-dialog
+  [modal]="true"
+  [(visible)]="visible"
+  styleClass="w-96"
+  [closable]="false"
+  [showHeader]="false"
+>
+  <div class="flex flex-col gap-2 mt-3">
+    <div class="flex justify-end items-baseline">
+      <button
+        class="rounded-xl bg-[#FFE1E1] px-2 py-1 flex items-center cursor-pointer"
+        (click)="onClose()"
+      >
+        <span class="font-bold text-red-400 mr-2">CERRAR</span>
+        <i class="pi pi-times text-red-400" style="font-weight: bold"></i>
+      </button>
+    </div>
+    <img
+      [src]="character.image"
+      class="w-full aspect-square"
+      alt="char_image"
+    />
+    <div class="space-y-3">
+      <div class="flex justify-around gap-3">
+        <p class="bg-[#CCEFFF] font-bold rounded-full px-2 truncate">
+          Estado:
+          <span>
+            {{ character.status }}
+          </span>
+        </p>
+        <p class="bg-[#FFE1E1] font-bold rounded-full px-2 truncate">
+          Género:
+          <span>
+            {{ character.gender }}
+          </span>
+        </p>
+      </div>
+      <div class="flex justify-around gap-3">
+        <p class="bg-[#CCFFDA] font-bold rounded-full px-2 truncate">
+          Especie:
+          <span>
+            {{ character.species }}
+          </span>
+        </p>
+        <p class="bg-[#F7F6CE] font-bold rounded-full px-2 truncate">
+          Origen:
+          <span>
+            {{ character.origin.name }}
+          </span>
+        </p>
+      </div>
+      <div class="flex justify-center">
+        <p
+          class="bg-[#FAE9D2] font-bold rounded-full px-2 w-fit text-center truncate"
+        >
+          Ubicación:
+          <span>
+            {{ character.location.name }}
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</p-dialog>

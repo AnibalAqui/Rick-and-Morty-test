@@ -1,0 +1,74 @@
+<div class="w-full flex flex-col gap-3">
+  @if (isFavorites) {
+    <h1 class="font-bold text-2xl text-center">Mis Favoritos</h1>
+  } @else {
+    <h1 class="font-bold text-2xl text-center">Wubba lubba dub dub!</h1>
+    <p class="font-bold text-center">
+      Base de datos de personajes de Rick y Morty
+    </p>
+  }
+  @if (isFavorites) {
+    <div
+      class="flex flex-row gap-3 bg-[#EFF0F1] rounded-md items-baseline p-2 pr-3 w-fit"
+    >
+      <p-button
+        icon="pi pi-home"
+        size="small"
+        severity="info"
+        (onClick)="favoritesFn()"
+      />
+      <p>Volver</p>
+    </div>
+  } @else {
+    <div class="flex justify-between">
+      <div>
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-search"></i>
+          </p-inputgroup-addon>
+          <input
+            pInputText
+            size="small"
+            placeholder="Buscar"
+            [formControl]="search"
+          />
+        </p-inputgroup>
+      </div>
+      <div
+        class="flex flex-row gap-3 bg-[#EFF0F1] rounded-md items-baseline p-1"
+      >
+        <p>Mis Favortios</p>
+        <p-button
+          icon="pi pi-star"
+          size="small"
+          severity="help"
+          (onClick)="favoritesFn()"
+        />
+      </div>
+    </div>
+  }
+  @if (characters && characters.length > 0) {
+    <div class="bg-[#EFF0F1] grid grid-cols-4 gap-3 rounded-md p-3">
+      @for (char of characters; track $index) {
+        <app-charcater-card
+          [character]="char"
+          (clicked)="showDialog($event)"
+          (favorite)="addToFavorites($event)"
+        />
+      }
+    </div>
+    <p-paginator
+      (onPageChange)="onPageChange($event)"
+      [first]="0"
+      [rows]="20"
+      [totalRecords]="total"
+    />
+  }
+</div>
+@if (charater) {
+  <app-card-dialog
+    [character]="charater"
+    [visible]="visible"
+    (closed)="visible = $event"
+  ></app-card-dialog>
+}
