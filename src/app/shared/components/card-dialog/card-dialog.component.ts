@@ -7,7 +7,6 @@ import { Subject } from 'rxjs';
   selector: 'app-card-dialog',
   imports: [DialogModule],
   templateUrl: './card-dialog.component.html',
-  styleUrl: './card-dialog.component.css',
 })
 export class CardDialogComponent {
   @Input({ required: true }) character!: CharRespResult;

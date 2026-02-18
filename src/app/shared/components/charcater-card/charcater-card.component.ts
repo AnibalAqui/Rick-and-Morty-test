@@ -15,7 +15,6 @@ import { CharRespResult } from '../../../core/services/characters/characters.int
   selector: 'app-charcater-card',
   imports: [ButtonModule],
   templateUrl: './charcater-card.component.html',
-  styleUrl: './charcater-card.component.css',
 })
 export class CharcaterCardComponent implements OnInit, OnChanges {
   @Input({ required: true }) character!: CharRespResult;
