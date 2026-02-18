@@ -34,5 +34,4 @@ export interface CharRespInfo {
 export interface CharactersReqOpts {
   page?: number;
   name?: string;
-  ids?: number[];
 }

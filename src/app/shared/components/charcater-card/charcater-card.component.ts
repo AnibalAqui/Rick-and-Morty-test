@@ -1,4 +1,3 @@
-import { NgOptimizedImage } from '@angular/common';
 import {
   Component,
   Input,
@@ -8,16 +7,18 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { ButtonModule, ButtonSeverity } from 'primeng/button';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { CharRespResult } from '../../../core/services/characters/characters.interface';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-charcater-card',
-  imports: [ButtonModule],
+  imports: [ButtonModule, NgOptimizedImage],
   templateUrl: './charcater-card.component.html',
 })
 export class CharcaterCardComponent implements OnInit, OnChanges {
   @Input({ required: true }) character!: CharRespResult;
+  @Input() priority = false;
   @Output() clicked = new Subject<CharRespResult>();
   @Output() favorite = new Subject<number>();
   severity: ButtonSeverity = 'secondary';
@@ -56,6 +57,8 @@ export class CharcaterCardComponent implements OnInit, OnChanges {
     } else {
       this.severity = 'secondary';
     }
-    this.favorite.next(this.character.id);
+    if (this.character.id != null) {
+      this.favorite.next(this.character.id);
+    }
   }
 }

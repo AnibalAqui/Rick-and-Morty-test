@@ -18,8 +18,9 @@ export class CharactersService {
     if (req?.page != null) {
       params = params.set('page', req.page.toString());
     }
-    if (req?.name) params = params.set('name', req.name.trim());
-
+    if (req?.name) {
+      params = params.set('name', req.name.trim());
+    }
     return this.baseService.get<CharactersResp>('/character', params);
   }
 

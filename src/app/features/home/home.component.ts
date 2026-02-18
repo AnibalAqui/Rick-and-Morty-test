@@ -6,10 +6,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { debounceTime, Subscription, switchMap, tap } from 'rxjs';
-import {
-  CharactersResp,
-  CharRespResult,
-} from '../../core/services/characters/characters.interface';
+import { CharRespResult } from '../../core/services/characters/characters.interface';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { CardDialogComponent } from '../../shared/components/card-dialog/card-dialog.component';
 import { CharcaterCardComponent } from '../../shared/components/charcater-card/charcater-card.component';
