@@ -103,7 +103,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       const local = localStorage.getItem('favorites');
       if (local) {
         const favs: number[] = JSON.parse(local);
-        this.characters = [];
         const response = await this.charService.getCharactersById(favs);
         if (response) {
           this.characters = response;
@@ -111,7 +110,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-      this.characters = [];
       this.getCharacters();
     }
   }

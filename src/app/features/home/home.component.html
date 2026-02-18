@@ -47,7 +47,7 @@
       </div>
     </div>
   }
-  @if (characters && characters.length > 0) {
+  @if (characters) {
     <div class="bg-[#EFF0F1] grid grid-cols-4 gap-3 rounded-md p-3">
       @for (char of characters; track $index) {
         <app-charcater-card
