@@ -95,15 +95,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   async favoritesFn() {
+    this.characters = [];
     this.isFavorites = !this.isFavorites;
     if (this.isFavorites) {
       const local = localStorage.getItem('favorites');
       if (local) {
         const favs: number[] = JSON.parse(local);
+        if (favs.length === 0) return;
         const response = await this.charService.getCharactersById(favs);
-        if (response) {
+        if (!response) return;
+        const isArray = Array.isArray(response);
+        if (isArray) {
           this.characters = response;
           this.total = this.characters.length;
+        } else {
+          this.characters = [response];
+          this.total = 1;
         }
       }
     } else {

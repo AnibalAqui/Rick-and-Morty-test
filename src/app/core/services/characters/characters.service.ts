@@ -26,6 +26,8 @@ export class CharactersService {
 
   getCharactersById(ids: number[]) {
     const idStrings = ids.join(',');
-    return this.baseService.get<CharRespResult[]>(`/character/${idStrings}`);
+    return this.baseService.get<CharRespResult[] | CharRespResult>(
+      `/character/${idStrings}`,
+    );
   }
 }

@@ -47,7 +47,7 @@
       </div>
     </div>
   }
-  @if (characters) {
+  @if (characters && characters.length > 0) {
     <div
       class="bg-[#EFF0F1] grid grid-cols-2 md:grid-cols-4 gap-3 rounded-md p-3"
     >
@@ -66,6 +66,8 @@
       [rows]="20"
       [totalRecords]="total"
     />
+  } @else {
+    <p class="font-bold text-center">No ha agregado favoritos</p>
   }
 </div>
 @if (charater) {
