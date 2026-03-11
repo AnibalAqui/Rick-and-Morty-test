@@ -1,11 +1,21 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { debounceTime, Subscription, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { CharRespResult } from '../../core/services/characters/characters.interface';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { CardDialogComponent } from '../../shared/components/card-dialog/card-dialog.component';
@@ -22,61 +32,58 @@ import { CharcaterCardComponent } from '../../shared/components/charcater-card/c
     CharcaterCardComponent,
     CardDialogComponent,
     ReactiveFormsModule,
+    AsyncPipe,
   ],
   templateUrl: './home.component.html',
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
   private charService = inject(CharactersService);
   isFavorites = false;
-  characters: CharRespResult[] | undefined;
+  characters$!: Observable<CharRespResult[]>;
   visible = false;
   charater: CharRespResult | undefined;
+  private page$ = new BehaviorSubject<number>(1);
+  private favoritesMode$ = new BehaviorSubject<boolean>(false);
   search = new FormControl();
-  search$!: Subscription;
   searchValue: string | undefined;
   favorties: number[] = [];
   total = 0;
 
-  ngOnDestroy(): void {
-    this.search$.unsubscribe();
+  ngOnInit() {
+    this.characters$ = combineLatest([
+      this.search.valueChanges.pipe(startWith('')),
+      this.page$,
+      this.favoritesMode$,
+    ]).pipe(
+      switchMap(([search, page, isFavorites]) => {
+        if (isFavorites) {
+          const local = localStorage.getItem('favorites');
+          if (!local) return of([]);
+
+          const favs: number[] = JSON.parse(local);
+          if (favs.length === 0) return of([]);
+
+          return this.charService.getCharactersById(favs).pipe(
+            map((res) => (Array.isArray(res) ? res : [res])),
+            tap((res) => (this.total = res.length)),
+          );
+        }
+
+        return this.charService
+          .getCharacters({
+            name: search,
+            page,
+          })
+          .pipe(
+            tap((res) => (this.total = res.info.count)),
+            map((res) => res.results),
+          );
+      }),
+    );
   }
 
-  async ngOnInit() {
-    this.search$ = this.search.valueChanges
-      .pipe(
-        debounceTime(300),
-        tap((val) => (this.searchValue = val)),
-        switchMap((val) =>
-          this.charService.getCharacters({
-            name: val,
-          }),
-        ),
-      )
-      .subscribe((response) => {
-        this.characters = response.results;
-        this.total = response.info.count;
-      });
-    await this.getCharacters();
-  }
-
-  async getCharacters() {
-    const resp = await this.charService.getCharacters();
-    if (resp) {
-      this.characters = resp.results;
-      this.total = resp.info.count;
-    }
-  }
-
-  async onPageChange(e: PaginatorState) {
-    const page = (e.page ?? 0) + 1;
-    const resp = await this.charService.getCharacters({
-      page,
-      name: this.searchValue,
-    });
-    if (resp) {
-      this.characters = resp.results;
-      this.total = resp.info.count;
-    }
+  onPageChange(e: PaginatorState) {
+    this.page$.next((e.page ?? 0) + 1);
   }
 
   showDialog(e: CharRespResult) {
@@ -94,27 +101,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     localStorage.setItem('favorites', JSON.stringify(this.favorties));
   }
 
-  async favoritesFn() {
-    this.characters = [];
-    this.isFavorites = !this.isFavorites;
-    if (this.isFavorites) {
-      const local = localStorage.getItem('favorites');
-      if (local) {
-        const favs: number[] = JSON.parse(local);
-        if (favs.length === 0) return;
-        const response = await this.charService.getCharactersById(favs);
-        if (!response) return;
-        const isArray = Array.isArray(response);
-        if (isArray) {
-          this.characters = response;
-          this.total = this.characters.length;
-        } else {
-          this.characters = [response];
-          this.total = 1;
-        }
-      }
-    } else {
-      this.getCharacters();
-    }
+  favoritesFn() {
+    this.favoritesMode$.next(!this.favoritesMode$.value);
   }
 }
